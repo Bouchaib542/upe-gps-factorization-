@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>À propos — UPE & GPS Factorization</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="À propos du projet UPE (Unified Prime Equation) et de l’algorithme de factorisation GPS : cadre théorique, objectifs, références et contact." />
+  <meta name="theme-color" content="#5B21B6" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <div class="brand">
+        <a href="./" class="brand-link">UPE • GPS</a>
+        <span class="tag">Proof & Calculator</span>
+      </div>
+      <nav class="nav">
+        <a href="./#calculator">Calculatrice</a>
+        <a href="./factorization.html">Factorisation</a>
+        <a href="./paper.html">UPE Paper</a>
+        <a href="./factor-paper.html">Paper Factorisation</a>
+        <a href="./about.html">À propos</a>
+        <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap">
+        <h1>À propos du projet</h1>
+        <p class="lede">
+          <strong>UPE (Unified Prime Equation)</strong> fournit un cadre explicite et unificateur
+          pour repérer des nombres premiers à proximité de tout entier et produire des paires de Goldbach
+          via un tamis fini, une fenêtre centrale courte et une correction bornée. Le module
+          <strong>GPS Factorization</strong> transpose ces idées à la factorisation en ancrant la recherche près de √N.
+        </p>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="wrap grid">
+        <div class="card">
+          <h3>Vision</h3>
+          <p>
+            Unifier détection de premiers, paires de Goldbach et factorisation sous un
+            même principe : <em>tamis fini</em> (P ≍ c₁·log N), <em>fenêtre centrale</em> (T ≍ c₂·(log N)²),
+            <em>classement “admissible d’abord”</em>, et <em>correction bornée</em> (Δ_step ≤ 2 observé).
+          </p>
+        </div>
+        <div class="card">
+          <h3>Ce que le site offre</h3>
+          <p>
+            Une calculatrice publique (BigInt + Miller–Rabin) pour : (i) premiers près de X,
+            (ii) paires de Goldbach pour E = 2x, (iii) factorisation guidée près de √N.
+            Deux articles d’accompagnement détaillent preuves, heuristiques et résultats.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Reproductibilité</h3>
+          <p>
+            Les paramètres P et T sont affichés et justifiés. Les exemples peuvent être rejoués avec vos propres entrées,
+            y compris des formes <code>10^k</code>. Les pages <em>Paper</em> décrivent chaque étape afin de permettre la reproduction.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="calc">
+      <div class="wrap">
+        <h2>Auteur</h2>
+        <p>
+          <strong>Bahbouhi Bouchaib</strong> — chercheur indépendant (Nantes, France).
+          Intérêts : théories des nombres (primes, Goldbach, factorisation), calcul haute précision,
+          heuristiques et fenêtres minimales. Publications et prototypes ouverts sur GitHub Pages.
+        </p>
+
+        <h2>Liens publics</h2>
+        <ul style="margin-left:1.2rem;">
+          <li>
+            Goldbach Window — Unconditional Proof :
+            <a href="https://b43797.github.io/goldbach-window-unconditional-proof/" target="_blank" rel="noopener">
+              b43797.github.io/goldbach-window-unconditional-proof/
+            </a>
+          </li>
+          <li>
+            Unified Prime Equation (UPE) :
+            <a href="https://b43797.github.io/unified-prime-equation/" target="_blank" rel="noopener">
+              b43797.github.io/unified-prime-equation/
+            </a>
+          </li>
+          <li>
+            Présent dépôt : <em>UPE • GPS Factorization — Proof & Calculator</em>
+          </li>
+        </ul>
+
+        <h2>Comment citer</h2>
+        <p class="muted">
+          Bahbouhi, B. (2025). <em>Unified Prime Equation (UPE) and GPS Factorization — Proof & Calculator</em>.
+          GitHub Pages. URL : <code>https://b43797.github.io/upe-gps-factorization/</code>
+        </p>
+
+        <h2>Contexte scientifique (brefs repères)</h2>
+        <ul style="margin-left:1.2rem;">
+          <li>Goldbach (1742) : conjecture forte — tout pair &gt; 2 est somme de deux premiers.</li>
+          <li>Hardy–Littlewood (1923) : heuristiques pour la densité de paires de premiers.</li>
+          <li>Cramér (1936) : modèle de gaps — prédiction d’échelle (log N)².</li>
+          <li>Ramaré (1995) : tout pair est somme d’au plus six premiers.</li>
+          <li>Vérifications massives (Oliveira e Silva et al., 2014) jusqu’à 4·10¹⁸.</li>
+        </ul>
+
+        <h2>Licence & droits</h2>
+        <p>
+          Code et textes sous <strong>Licence MIT</strong>. © 2025 Bahbouhi Bouchaib.
+          Toute réutilisation doit citer l’auteur et le dépôt. Pour des usages éditoriaux,
+          merci de prendre contact au préalable.
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+          Courriel : <span class="muted">bahbouhi.bouchaib<span>@</span>example.com</span>
+          (remplacez <em>example.com</em> par votre domaine).  
+          Issues GitHub bienvenues pour des questions techniques.
+        </p>
+
+        <p class="small muted" style="margin-top:1rem;">
+          Dernière mise à jour : septembre 2025.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div>
+        <strong>Unified Prime Equation (UPE)</strong> &mdash; © 2025 Bahbouhi Bouchaib — Licence MIT
+      </div>
+      <div class="footer-links">
+        <a href="./paper.html">UPE Paper</a>
+        <a href="./factor-paper.html">Paper Factorisation</a>
+        <a href="./README.html">README</a>
+        <a href="./sitemap.xml">Sitemap</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
+```0
