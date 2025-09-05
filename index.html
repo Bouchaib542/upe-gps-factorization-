@@ -1,206 +1,121 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <title>Unified Prime Equation (UPE) & GPS Factorization — Proof & Calculator</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Unified Prime Equation (UPE) — explicit windowed sieve for primes and Goldbach; GPS-inspired factorization algorithm. Public calculators and papers." />
-  <meta name="theme-color" content="#5B21B6" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./style.css" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FactoriX — Calculateur (UPE + petits facteurs)</title>
+  <style>
+    :root{
+      --violet:#5b2e91; --violet-2:#6d3db0; --jaune:#ffd84d; --noir:#1d1d1f; --gris:#f4f4f6; --gris-2:#e9e9ef;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial,sans-serif;
+      background:linear-gradient(180deg,#2a1b45 0%, #140f23 100%); color:#fff;
+    }
+    header{
+      padding:18px 20px; background:linear-gradient(90deg,var(--violet),var(--violet-2));
+      border-bottom:1px solid rgba(255,255,255,.1);
+    }
+    header h1{margin:0;font-size:20px;display:flex;gap:10px;align-items:center}
+    header .badge{background:var(--jaune); color:#2a1b45; padding:2px 8px; border-radius:999px; font-weight:700; font-size:12px}
+    main{max-width:980px; margin:20px auto; padding:0 16px 40px}
+    .panel{
+      background:#221836; border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:16px; margin-bottom:16px;
+      box-shadow:0 8px 24px rgba(0,0,0,.25);
+    }
+    .row{display:flex; flex-wrap:wrap; gap:12px}
+    .col{flex:1 1 220px; min-width:220px}
+    label{display:block; font-size:13px; color:#dcd6ee; margin:6px 0}
+    input[type=text],input[type=number]{
+      width:100%; padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.15);
+      background:#1a122c; color:#fff; outline:none;
+    }
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0;}
+    .hint{font-size:12px; color:#c7c0e3}
+    .controls{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+    button{
+      border:0; border-radius:12px; padding:10px 14px; font-weight:700; cursor:pointer; transition:.15s transform ease;
+    }
+    button.primary{background:var(--jaune); color:#2a1b45}
+    button.stop{background:#ff6b6b; color:#1b0e0e}
+    button.reset{background:#c9f27d; color:#16210f}
+    button:active{transform:translateY(1px)}
+    .switch{display:flex; align-items:center; gap:10px; margin-top:8px}
+    .log{
+      max-height:360px; overflow:auto; background:#120c21; border:1px solid rgba(255,255,255,.08);
+      border-radius:12px; padding:12px; font-family:ui-monospace,Menlo,Consolas,monospace; font-size:13px;
+    }
+    .line{padding:8px 10px; border-bottom:1px dashed rgba(255,255,255,.08)}
+    .line:last-child{border-bottom:0}
+    .ok{color:#9cffd1}
+    .warn{color:#ffd18a}
+    .err{color:#ff9aa2}
+    .muted{color:#b9b3cf}
+    .grid{display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:12px}
+    footer{opacity:.75; text-align:center; font-size:12px; margin-top:14px}
+    .pill{display:inline-block; background:#2c2144; border:1px solid rgba(255,255,255,.07); padding:4px 8px; border-radius:999px; font-size:12px; color:#e9e2ff}
+  </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="wrap">
-      <div class="brand">
-        <a href="./" class="brand-link">UPE • GPS</a>
-        <span class="tag">Proof & Calculator</span>
-      </div>
-      <nav class="nav">
-        <a href="./#calculator">Calculator</a>
-        <a href="./factorization.html">Factorization</a>
-        <a href="./paper.html">UPE Paper</a>
-        <a href="./factor-paper.html">Factorization Paper</a>
-        <a href="./about.html">About</a>
-        <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
-      </nav>
-    </div>
+  <header>
+    <h1>FactoriX <span class="badge">UPE + Small Factors</span></h1>
   </header>
-
   <main>
-    <section class="hero">
-      <div class="wrap">
-        <h1>Unified Prime Equation (UPE)</h1>
-        <p class="lede">
-          An explicit, windowed sieve that finds primes near any integer and produces Goldbach pairs
-          with a tiny bounded correction. Paired with a GPS-inspired factorization method near √N.
-        </p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#calculator">Open Calculator</a>
-          <a class="btn btn-ghost" href="./paper.html">Read the UPE paper</a>
+    <section class="panel">
+      <div class="row">
+        <div class="col">
+          <label for="n">N (biprime) — chiffres ou forme 10^k (+/- c)</label>
+          <input id="n" type="text" placeholder="ex: 999100008180000007 ou 10^18 - 12345" />
+          <div class="hint">Saisie libre : nombres géants acceptés (BigInt). Exemple : <span class="pill">550000002479</span></div>
         </div>
       </div>
     </section>
 
-    <section class="features">
-      <div class="wrap grid">
-        <div class="card">
-          <h3>Minimal Window</h3>
-          <p>Use a finite sieve up to P ≍ c₁·log N and a central window T ≍ c₂·(log N)². The first admissible offset usually hits directly (Δ_step = 0); otherwise ≤ 2.</p>
+    <section class="panel">
+      <div class="grid">
+        <div>
+          <label for="B">B (balayage petits facteurs, ≤ B)</label>
+          <input id="B" type="number" value="200000" min="1000" step="1000" />
+          <div class="hint">Balaye d’abord p ≤ B. Utile pour cas déséquilibrés (ex: p=101).</div>
         </div>
-        <div class="card">
-          <h3>Goldbach Mode</h3>
-          <p>For E = 2x, search symmetric offsets t so that (x−t, x+t) are both prime. The sieve’s residue symmetry aligns both sides.</p>
+        <div>
+          <label for="T">T (rayon fenêtre autour de √N)</label>
+          <input id="T" type="number" value="20000" min="100" step="100" />
+          <div class="hint">Augmente si grand écart entre les facteurs (gap).</div>
         </div>
-        <div class="card">
-          <h3>GPS Factorization</h3>
-          <p>Anchor at √N, follow admissible tracks (wheel + CRT), and test near the predicted deviation. Escalate to a light QS-on-tracks if gaps are wide.</p>
+        <div>
+          <label for="K">K (nombre d’anneaux)</label>
+          <input id="K" type="number" value="40" min="1" step="1" />
+          <div class="hint">Portée effective ≈ K × T.</div>
         </div>
+        <div>
+          <label for="mr">Miller–Rabin (tours)</label>
+          <input id="mr" type="number" value="12" min="1" step="1" />
+          <div class="hint">12–16 recommandé.</div>
+        </div>
+      </div>
+      <div class="switch">
+        <label><input id="pref" type="checkbox" checked /> Prefilter (crible admissible autour de √N)</label>
+        <label><input id="append" type="checkbox" checked /> Ajouter au journal (ne pas effacer)</label>
+      </div>
+      <div class="controls">
+        <button id="run" class="primary">Run</button>
+        <button id="stop" class="stop">Stop</button>
+        <button id="reset" class="reset">Reset</button>
       </div>
     </section>
 
-    <section id="calculator" class="calc">
-      <div class="wrap">
-        <h2>Unified Calculator</h2>
-        <p class="muted">Enter large integers directly (digits only) or as powers like <code>10^1000</code>. Uses BigInt and Miller–Rabin probable primality tests.</p>
-
-        <div class="tabs">
-          <button class="tab active" data-tab="prime">Prime near X</button>
-          <button class="tab" data-tab="goldbach">Goldbach (E = 2x)</button>
-          <button class="tab" data-tab="factor">Factorization (N = p·q)</button>
-        </div>
-
-        <!-- Prime near X -->
-        <div class="panel active" id="panel-prime">
-          <div class="form-grid">
-            <label>
-              X (center)
-              <input id="prime-x" type="text" placeholder="e.g., 2000000000000000 or 10^15" />
-            </label>
-            <label>
-              c₁ (P ≍ c₁·log N)
-              <input id="prime-c1" type="number" step="0.1" value="1.6" />
-            </label>
-            <label>
-              c₂ (T ≍ c₂·(log N)²)
-              <input id="prime-c2" type="number" step="0.1" value="2.0" />
-            </label>
-            <label>
-              Small-prime cutoff (override)
-              <input id="prime-P-override" type="number" placeholder="blank = auto" />
-            </label>
-            <label>
-              Window radius override |u| ≤ T
-              <input id="prime-T-override" type="number" placeholder="blank = auto" />
-            </label>
-            <label>
-              Miller–Rabin rounds
-              <input id="prime-mr" type="number" min="1" value="12" />
-            </label>
-          </div>
-          <div class="actions">
-            <button id="prime-run" class="btn btn-primary">Find Prime</button>
-            <button id="prime-clear" class="btn btn-ghost">Clear</button>
-          </div>
-          <pre id="prime-out" class="console"></pre>
-        </div>
-
-        <!-- Goldbach -->
-        <div class="panel" id="panel-goldbach">
-          <div class="form-grid">
-            <label>
-              E (even)
-              <input id="gb-e" type="text" placeholder="e.g., 12228864 or 10^20" />
-            </label>
-            <label>
-              c₁ (P ≍ c₁·log E)
-              <input id="gb-c1" type="number" step="0.1" value="1.6" />
-            </label>
-            <label>
-              c₂ (T ≍ c₂·(log E)²)
-              <input id="gb-c2" type="number" step="0.1" value="2.0" />
-            </label>
-            <label>
-              Small-prime cutoff (override)
-              <input id="gb-P-override" type="number" placeholder="blank = auto" />
-            </label>
-            <label>
-              Window radius override |t| ≤ T
-              <input id="gb-T-override" type="number" placeholder="blank = auto" />
-            </label>
-            <label>
-              Miller–Rabin rounds
-              <input id="gb-mr" type="number" min="1" value="12" />
-            </label>
-          </div>
-          <div class="actions">
-            <button id="gb-run" class="btn btn-primary">Find Goldbach Pair</button>
-            <button id="gb-clear" class="btn btn-ghost">Clear</button>
-          </div>
-          <pre id="gb-out" class="console"></pre>
-        </div>
-
-        <!-- Factorization -->
-        <div class="panel" id="panel-factor">
-          <div class="form-grid">
-            <label>
-              N (composite)
-              <input id="fac-n" type="text" placeholder="e.g., 899 or 10^40 + 87" />
-            </label>
-            <label>
-              c₁ (P ≍ c₁·log N)
-              <input id="fac-c1" type="number" step="0.1" value="1.6" />
-            </label>
-            <label>
-              c₂ (T ≍ c₂·(log N)²)
-              <input id="fac-c2" type="number" step="0.1" value="2.0" />
-            </label>
-            <label>
-              Rings (K)
-              <input id="fac-k" type="number" min="1" value="40" />
-            </label>
-            <label>
-              Use wheel+CRT prefilter
-              <select id="fac-pref">
-                <option value="on" selected>on</option>
-                <option value="off">off</option>
-              </select>
-            </label>
-            <label>
-              Miller–Rabin rounds
-              <input id="fac-mr" type="number" min="1" value="12" />
-            </label>
-          </div>
-          <div class="actions">
-            <button id="fac-run" class="btn btn-primary">Factorize</button>
-            <button id="fac-clear" class="btn btn-ghost">Clear</button>
-          </div>
-          <pre id="fac-out" class="console"></pre>
-          <p class="muted small">
-            Note: For very large N and very wide gaps, the tool may suggest switching to a
-            light QS-on-tracks variant. This page prioritizes clarity over maximum speed.
-          </p>
-        </div>
-
-      </div>
+    <section class="panel">
+      <div id="log" class="log" aria-live="polite"></div>
     </section>
+
+    <footer>
+      © 2025 Bahbouhi Bouchaib — Algorithme hybride UPE + balayage petits facteurs
+    </footer>
   </main>
 
-  <footer class="site-footer">
-    <div class="wrap">
-      <div>
-        <strong>Unified Prime Equation (UPE)</strong> &mdash; © 2025 Bouchaïb Bahbouhi — MIT License
-      </div>
-      <div class="footer-links">
-        <a href="./paper.html">UPE Paper</a>
-        <a href="./factor-paper.html">Factorization Paper</a>
-        <a href="./README.html">README</a>
-        <a href="./sitemap.xml">Sitemap</a>
-      </div>
-    </div>
-  </footer>
-
-  <script src="./script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
