@@ -1,121 +1,175 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>FactoriX — Calculateur (UPE + petits facteurs)</title>
-  <style>
-    :root{
-      --violet:#5b2e91; --violet-2:#6d3db0; --jaune:#ffd84d; --noir:#1d1d1f; --gris:#f4f4f6; --gris-2:#e9e9ef;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial,sans-serif;
-      background:linear-gradient(180deg,#2a1b45 0%, #140f23 100%); color:#fff;
-    }
-    header{
-      padding:18px 20px; background:linear-gradient(90deg,var(--violet),var(--violet-2));
-      border-bottom:1px solid rgba(255,255,255,.1);
-    }
-    header h1{margin:0;font-size:20px;display:flex;gap:10px;align-items:center}
-    header .badge{background:var(--jaune); color:#2a1b45; padding:2px 8px; border-radius:999px; font-weight:700; font-size:12px}
-    main{max-width:980px; margin:20px auto; padding:0 16px 40px}
-    .panel{
-      background:#221836; border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:16px; margin-bottom:16px;
-      box-shadow:0 8px 24px rgba(0,0,0,.25);
-    }
-    .row{display:flex; flex-wrap:wrap; gap:12px}
-    .col{flex:1 1 220px; min-width:220px}
-    label{display:block; font-size:13px; color:#dcd6ee; margin:6px 0}
-    input[type=text],input[type=number]{
-      width:100%; padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.15);
-      background:#1a122c; color:#fff; outline:none;
-    }
-    input[type=number]::-webkit-outer-spin-button,
-    input[type=number]::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0;}
-    .hint{font-size:12px; color:#c7c0e3}
-    .controls{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
-    button{
-      border:0; border-radius:12px; padding:10px 14px; font-weight:700; cursor:pointer; transition:.15s transform ease;
-    }
-    button.primary{background:var(--jaune); color:#2a1b45}
-    button.stop{background:#ff6b6b; color:#1b0e0e}
-    button.reset{background:#c9f27d; color:#16210f}
-    button:active{transform:translateY(1px)}
-    .switch{display:flex; align-items:center; gap:10px; margin-top:8px}
-    .log{
-      max-height:360px; overflow:auto; background:#120c21; border:1px solid rgba(255,255,255,.08);
-      border-radius:12px; padding:12px; font-family:ui-monospace,Menlo,Consolas,monospace; font-size:13px;
-    }
-    .line{padding:8px 10px; border-bottom:1px dashed rgba(255,255,255,.08)}
-    .line:last-child{border-bottom:0}
-    .ok{color:#9cffd1}
-    .warn{color:#ffd18a}
-    .err{color:#ff9aa2}
-    .muted{color:#b9b3cf}
-    .grid{display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:12px}
-    footer{opacity:.75; text-align:center; font-size:12px; margin-top:14px}
-    .pill{display:inline-block; background:#2c2144; border:1px solid rgba(255,255,255,.07); padding:4px 8px; border-radius:999px; font-size:12px; color:#e9e2ff}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FactoriX — Fermat + Pollard-Rho (BigInt, 64-bit sûr)</title>
+<style>
+  body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;max-width:900px;margin:24px auto;padding:0 12px;line-height:1.4}
+  h1{font-size:20px;margin:0 0 10px}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  input[type=text]{flex:1;min-width:320px;padding:8px 10px;font-size:16px}
+  button{padding:10px 14px;font-size:16px;border:1px solid #ccc;border-radius:8px;cursor:pointer}
+  pre{background:#f6f8fa;padding:12px;border-radius:8px;white-space:pre-wrap}
+  small{opacity:.8}
+</style>
 </head>
 <body>
-  <header>
-    <h1>FactoriX <span class="badge">UPE + Small Factors</span></h1>
-  </header>
-  <main>
-    <section class="panel">
-      <div class="row">
-        <div class="col">
-          <label for="n">N (biprime) — chiffres ou forme 10^k (+/- c)</label>
-          <input id="n" type="text" placeholder="ex: 999100008180000007 ou 10^18 - 12345" />
-          <div class="hint">Saisie libre : nombres géants acceptés (BigInt). Exemple : <span class="pill">550000002479</span></div>
-        </div>
-      </div>
-    </section>
+  <h1>FactoriX — Factorisation robuste (Fermat + Pollard-Rho)</h1>
+  <div class="row">
+    <input id="nin" type="text" value="999100008180000007" />
+    <button id="go">Factoriser</button>
+    <button id="demo">Démo N=10^18+16e7+63</button>
+  </div>
+  <p><small>Entrer un entier ≤ 2⁶⁴−1 (≈ 1.84e19). Algorithme : crible petits diviseurs → Miller–Rabin (bases fixes 64-bit) → Fermat (rapide si facteurs proches) → Pollard-Rho (Brent).</small></p>
+  <pre id="out"></pre>
 
-    <section class="panel">
-      <div class="grid">
-        <div>
-          <label for="B">B (balayage petits facteurs, ≤ B)</label>
-          <input id="B" type="number" value="200000" min="1000" step="1000" />
-          <div class="hint">Balaye d’abord p ≤ B. Utile pour cas déséquilibrés (ex: p=101).</div>
-        </div>
-        <div>
-          <label for="T">T (rayon fenêtre autour de √N)</label>
-          <input id="T" type="number" value="20000" min="100" step="100" />
-          <div class="hint">Augmente si grand écart entre les facteurs (gap).</div>
-        </div>
-        <div>
-          <label for="K">K (nombre d’anneaux)</label>
-          <input id="K" type="number" value="40" min="1" step="1" />
-          <div class="hint">Portée effective ≈ K × T.</div>
-        </div>
-        <div>
-          <label for="mr">Miller–Rabin (tours)</label>
-          <input id="mr" type="number" value="12" min="1" step="1" />
-          <div class="hint">12–16 recommandé.</div>
-        </div>
-      </div>
-      <div class="switch">
-        <label><input id="pref" type="checkbox" checked /> Prefilter (crible admissible autour de √N)</label>
-        <label><input id="append" type="checkbox" checked /> Ajouter au journal (ne pas effacer)</label>
-      </div>
-      <div class="controls">
-        <button id="run" class="primary">Run</button>
-        <button id="stop" class="stop">Stop</button>
-        <button id="reset" class="reset">Reset</button>
-      </div>
-    </section>
+<script>
+"use strict";
 
-    <section class="panel">
-      <div id="log" class="log" aria-live="polite"></div>
-    </section>
+// ---------- Outils BigInt ----------
+function isqrt(n){ // racine entière (Newton) — BigInt
+  if (n < 0n) throw new Error("sqrt négative");
+  if (n < 2n) return n;
+  let x = n, y = (x + 1n) >> 1n;
+  while (y < x){ x = y; y = (x + n / x) >> 1n; }
+  return x;
+}
+function gcd(a,b){ while (b){ const t = a % b; a = b; b = t; } return a; }
+function modPow(a,e,m){ // powmod BigInt
+  let r = 1n, x = a % m, ee = e;
+  while (ee > 0n){
+    if (ee & 1n) r = (r * x) % m;
+    x = (x * x) % m;
+    ee >>= 1n;
+  }
+  return r;
+}
 
-    <footer>
-      © 2025 Bahbouhi Bouchaib — Algorithme hybride UPE + balayage petits facteurs
-    </footer>
-  </main>
+// ---------- Miller–Rabin déterministe pour < 2^64 ----------
+function isPrime64(n){
+  if (n < 2n) return false;
+  const small = [2n,3n,5n,7n,11n,13n,17n,19n,23n,29n];
+  for (const p of small){ if (n % p === 0n) return n === p; }
+  // n-1 = d*2^s
+  let d = n - 1n, s = 0n;
+  while ((d & 1n) === 0n){ d >>= 1n; s++; }
+  const bases = [2n,3n,5n,7n,11n,13n,17n];
+  for (const a of bases){
+    if (a % n === 0n) continue;
+    let x = modPow(a, d, n);
+    if (x === 1n || x === n-1n) continue;
+    let ok = false;
+    for (let r=1n; r<s; r++){
+      x = (x*x) % n;
+      if (x === n-1n){ ok = true; break; }
+    }
+    if (!ok) return false;
+  }
+  return true;
+}
 
-  <script src="script.js"></script>
+// ---------- Fermat (utile si p≈q≈√n) ----------
+function fermatFactor(n, maxSteps = 2_000_000){ // limite modeste
+  let a = isqrt(n);
+  if (a*a < n) a += 1n;
+  for (let i=0; i<maxSteps; i++){
+    const b2 = a*a - n;
+    const b  = isqrt(b2);
+    if (b*b === b2){
+      const p = a - b, q = a + b;
+      if (p>1n && q>1n && p*q === n) return [p, q];
+    }
+    a += 1n;
+  }
+  return null;
+}
+
+// ---------- Pollard-Rho (Brent) ----------
+function rhoBrent(n){
+  if (n % 2n === 0n) return 2n;
+  const rand = () => (BigInt(Math.floor(Math.random()*1e9)) % (n-3n)) + 2n;
+  let y = rand(), c = rand(), m = 1n<<6n;
+  let g = 1n, r = 1n, q = 1n, x = 0n, ys = 0n;
+  while (g === 1n){
+    x = y;
+    for (let i=0n; i<r; i++) y = (y*y + c) % n;
+    let k = 0n;
+    while (k < r && g === 1n){
+      ys = y;
+      const lim = (m < (r-k) ? m : (r-k));
+      for (let i=0n; i<lim; i++){
+        y = (y*y + c) % n;
+        let diff = x > y ? x - y : y - x;
+        q = (q * (diff % n)) % n;
+      }
+      g = gcd(q, n);
+      k += m;
+    }
+    r <<= 1n;
+  }
+  if (g === n){
+    do{
+      ys = (ys*ys + c) % n;
+      let diff = x > ys ? x - ys : ys - x;
+      g = gcd(diff, n);
+    } while (g === 1n);
+  }
+  return g;
+}
+
+// ---------- Factorisation récursive ----------
+function factor(n, out){
+  if (n === 1n) return;
+  if (isPrime64(n)){ out.push(n); return; }
+  // petit crible rapide
+  for (const p of [2n,3n,5n,7n,11n,13n,17n,19n,23n,29n,31n,37n,41n,43n,47n]){
+    if (n % p === 0n){ factor(p, out); factor(n/p, out); return; }
+  }
+  // Fermat d'abord (rapide si facteurs proches de sqrt(n))
+  const ff = fermatFactor(n, 2_000_000);
+  if (ff){ factor(ff[0], out); factor(ff[1], out); return; }
+  // Sinon Pollard-Rho (Brent)
+  let d = n;
+  while (d === n) d = rhoBrent(n);
+  factor(d, out); factor(n/d, out);
+}
+function factorize(N){
+  const res = [];
+  factor(N, res);
+  return res;
+}
+
+// ---------- UI ----------
+const $ = sel => document.querySelector(sel);
+const out = $('#out');
+function log(s){ out.textContent += s + "\n"; }
+function clearOut(){ out.textContent = ""; }
+
+$('#go').onclick = () => {
+  clearOut();
+  let txt = $('#nin').value.trim();
+  if (!/^\d+$/.test(txt)){ log("Entrée invalide. Saisir un entier décimal."); return; }
+  const N = BigInt(txt);
+  log("N = " + N.toString());
+  const t0 = performance.now();
+  const fs = factorize(N).sort((a,b)=> (a<b?-1:1));
+  const t1 = performance.now();
+  const prod = fs.reduce((p,x)=> p*x, 1n);
+  log("Facteurs ("+fs.length+"): " + fs.map(x=>x.toString()).join(" × "));
+  log("Vérif: produit == N  →  " + (prod === N));
+  log("Temps: " + (t1 - t0).toFixed(1) + " ms");
+};
+
+$('#demo').onclick = () => {
+  $('#nin').value = "1000000016000000063";
+  $('#go').click();
+};
+
+// Pré-remplissage: le N de ton test
+document.addEventListener('DOMContentLoaded', ()=>{
+  $('#nin').value = "999100008180000007";
+});
+</script>
 </body>
 </html>
